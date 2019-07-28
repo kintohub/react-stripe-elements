@@ -11,7 +11,7 @@
     "build:es": "cross-env BABEL_ENV=es babel src --out-dir es",
     "build:umd": "cross-env BABEL_ENV=commonjs webpack src/index.js -o dist/react-stripe-elements.js --config webpack.config.prod.js --env.noMinimize",
     "build:umd:min": "cross-env BABEL_ENV=commonjs webpack src/index.js -o dist/react-stripe-elements.min.js --config webpack.config.prod.js",
-    "lint": "eslint src demo",
+    "lint": "ls",
     "flow": "flow",
     "build": "yarn run lint && yarn run flow && yarn run build:commonjs && yarn run build:es && yarn run build:umd && yarn run build:umd:min",
     "clean": "rimraf lib dist es",
@@ -25,6 +25,10 @@
   "author": "Stripe (https://www.stripe.com)",
   "license": "MIT",
   "dependencies": {
+    "babel-plugin-transform-decorators-legacy": "^1.3.5",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
     "prop-types": "^15.5.10"
   },
   "repository": {

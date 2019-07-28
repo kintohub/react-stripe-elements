@@ -1,3 +1,5 @@
+require("babel-polyfill");
+
 // @flow
 /* eslint-disable no-console, react/no-multi-comp */
 import React from 'react';
@@ -55,15 +57,27 @@ const createOptions = (fontSize: string, padding: ?string) => {
 };
 
 class _CardForm extends React.Component<InjectedProps & {fontSize: string}> {
-  handleSubmit = (ev) => {
+  handleSubmit = async (ev) => {
+
     ev.preventDefault();
-    if (this.props.stripe) {
-      this.props.stripe
+
+    const {token: {id: cardToken, card: {id: cardId}}} = await this.props.stripe
         .createToken()
-        .then((payload) => console.log('[token]', payload));
-    } else {
-      console.log("Stripe.js hasn't loaded yet.");
-    }
+
+    const response = await fetch('http://localhost:3031/sub/apply', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        // payment_method_id: paymentMethod.id,
+        // TODO: plans, amount, stripe_cus_id, src_id
+        cardToken,
+        cardId,
+      })
+    });
+
+    const json = await response.json();
+
+    console.log(json);
   };
   render() {
     return (
@@ -345,7 +359,7 @@ class Checkout extends React.Component<{}, {elementFontSize: string}> {
 }
 const App = () => {
   return (
-    <StripeProvider apiKey="pk_test_6pRNASCoBOKtIshFeQd4XMUh">
+    <StripeProvider apiKey="pk_test_OsISvQbBxAIq3w8vgjTJpxtj005bloHg6I">
       <Checkout />
     </StripeProvider>
   );
