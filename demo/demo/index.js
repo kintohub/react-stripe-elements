@@ -60,24 +60,64 @@ class _CardForm extends React.Component<InjectedProps & {fontSize: string}> {
   handleSubmit = async (ev) => {
 
     ev.preventDefault();
-
+    // KINTO_TEST
     const {token: {id: cardToken, card: {id: cardId}}} = await this.props.stripe
         .createToken()
 
     const response = await fetch('http://localhost:3031/sub/apply', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Kinto-Session-Authblock-Account-Id': 'abc32b95-6c04-4cff-81c8-4baf092d80e6',
+      },
       body: JSON.stringify({
-        // payment_method_id: paymentMethod.id,
-        // TODO: plans, amount, stripe_cus_id, src_id
+        // FE ONLY NEEDS TO SEND THESE TWO BELLOW TO WORKSPACES
         cardToken,
-        cardId,
+        cardId,//: "card_1F2aBWAwfGMwqxjvflg45LrQ",
+
+        // workspaceId: "ba7a9dce-7625-468a-ae68-cdcc7d75dbc3",
+        // products: [{
+        //   name: "PRO_TIER",
+        //   qty: 1,
+        //   productType: "SUBSCRIPTION"
+        // }, {
+        //   name: "EXTRA_SERVERLESS_BLOCK_MEMORY",
+        //   qty: 2,
+        //   productType: "EXTRA_SUBSCRIPTION"
+        // }],
+
+        // WORKSPACES WILL CALCULATE THE COST AND SENT THESE TO STRIPE BLOCK
+        plans: ["plan_FZTrfhMW78WNgE", "plan_FZTw3QAcyBJydP", "plan_FZTw3QAcyBJydP"],
+        totalCost: 25+15+15,
+        user: {
+          userName: "Lol1 User",
+          Email: "lol1@user.com",
+          stripeId: "cus_FZ92cXbOv6cF10"
+        },
+
+
+        // PROJ MAN WILL CALCULATE THE COST AND SENT THESE TO STRIPE BLOCK
+        // products: [{
+        //   stripeId: "prod_FUaPXoh7HIiu8t",
+        //   description: "1 gb of AO Memory",
+        //   cost: 1500,
+        // }, {
+        //   stripeId: "prod_FUaPXoh7HIiu8t",
+        //   description: "1 gb of AO Memory",
+        //   cost: 1500
+        // }],
+        // user: {
+        //   userName: "Lol User",
+        //   Email: "lol@user.com",
+        //   stripeId: "cus_FW9VXTLCDXQUHS"
+        // }
       })
     });
 
     const json = await response.json();
 
     console.log(json);
+    // KINTO_TEST
   };
   render() {
     return (
